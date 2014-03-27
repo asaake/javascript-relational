@@ -7,7 +7,10 @@ class @Model
     
     if @relationalModels()[clazz.name]?
       capture = {}
-      Error.captureStackTrace(capture, @mixin)
+      if Error.captureStackTrace?
+        Error.captureStackTrace(capture, @mixin)
+      else
+        capture.stack = "stack trace unsupported."
       console.warn("override relationalModel: #{clazz.name} at #{capture.stack}")
     @relationalModels()[clazz.name] = clazz
     
