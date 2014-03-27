@@ -3,8 +3,9 @@ javascript-relational
 
 javascriptでリレーショナルモデルを処理するモデルクラス
 
-必要なライブラリ
-* sugar.js
+動作させるのに必要なライブラリ
+* sugar.js | default
+  * Inflections
 
 動作確認したブラウザ
 * Chrome
