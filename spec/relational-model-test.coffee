@@ -184,6 +184,48 @@ describe "Model", () ->
           }]
         })
       
+      it "createで新しいオブジェクトを作成できる", () ->
+        data = {
+          id: 1
+          name: "emp1"
+        }
+        employee = @Employee.create(data)
+        expect(employee.attrs()).to.eql(data)
+        
+      it "createで関連も読み込んで新しいオブジェクトを作成できる", () ->
+        employee = @Employee.create(@data)
+        expect(employee.attrs()).to.have.property("id", 1)
+        expect(employee.attrs()).to.have.property("name", "emp1")
+        
+        # employee.assignsが取り込んだデータと一致する
+        expect(employee.attrs()).to.have.property("assigns")
+        
+        assigns = employee.get("assigns")
+        expect(assigns.length).to.eql(2)
+        
+        expect(assigns[0].attrs()).to.have.property("id", 21)
+        expect(assigns[0].attrs()).to.have.property("employeeId", 1)
+        expect(assigns[0].attrs()).to.have.property("departmentId", 11)
+        
+        expect(assigns[1].attrs()).to.have.property("id", 22)
+        expect(assigns[1].attrs()).to.have.property("employeeId", 1)
+        expect(assigns[1].attrs()).to.have.property("departmentId", 11)
+        
+        # employee.assings.departmentが取り込んだデータと一致する
+        expect(employee.attrs()).to.have.property("assigns")
+        
+        department = employee.get("assigns")[0].get("department")
+        expect(department.attrs()).to.have.property("id", 11)
+        expect(department.attrs()).to.have.property("name", "dept11")
+        
+        # employee.departmentsが取り込んだデータと一致する
+        expect(employee.attrs()).to.have.property("departments")
+        
+        departments = employee.get("departments")
+        
+        expect(departments.length).to.eql(1)
+        expect(departments[0].attrs()).to.have.property("id", 11)
+        expect(departments[0].attrs()).to.have.property("name", "dept11")
   
   describe "定義メソッド", () ->
       

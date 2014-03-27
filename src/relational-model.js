@@ -198,27 +198,26 @@ this.Model = (function() {
               if (through != null) {
                 (function(_this) {
                   return (function(id, model, key, assoc) {
-                    return lazyLoaders.push(function() {
-                      var done, relationId, target, targets, throughModel, _i, _len, _ref2;
-                      if (!model.hasProperty(through)) {
-                        throw new Error("" + (model.getClassName()) + " has not " + through + " relation. define relation is " + key + ".");
-                      }
-                      done = {};
-                      targets = [];
-                      _ref2 = model.getProperty(through);
-                      for (_i = 0, _len = _ref2.length; _i < _len; _i++) {
-                        throughModel = _ref2[_i];
-                        target = throughModel.getProperty(assoc.options.model.toLowerCase());
-                        relationId = target.getProperty("id");
-                        if (!done.hasOwnProperty(relationId)) {
-                          targets.push(target);
+                    if (model.hasProperty(through)) {
+                      return lazyLoaders.push(function() {
+                        var done, relationId, target, targets, throughModel, _i, _len, _ref2;
+                        done = {};
+                        targets = [];
+                        _ref2 = model.getProperty(through);
+                        for (_i = 0, _len = _ref2.length; _i < _len; _i++) {
+                          throughModel = _ref2[_i];
+                          target = throughModel.getProperty(assoc.options.model.toLowerCase());
+                          relationId = target.getProperty("id");
+                          if (!done.hasOwnProperty(relationId)) {
+                            targets.push(target);
+                          }
+                          done[relationId] = true;
                         }
-                        done[relationId] = true;
-                      }
-                      if (!targets.isEmpty()) {
-                        return model.setProperty(key, targets, false);
-                      }
-                    });
+                        if (!targets.isEmpty()) {
+                          return model.setProperty(key, targets, false);
+                        }
+                      });
+                    }
                   });
                 })(this)(id, model, key, assoc);
               } else {
@@ -234,8 +233,6 @@ this.Model = (function() {
                 }
                 if (!targets.isEmpty()) {
                   model.setProperty(key, targets, false);
-                } else {
-                  console.debug("" + (model.getClassName()) + " hasOne " + assoc.options.model + " is undefined.");
                 }
               }
               break;
@@ -250,17 +247,12 @@ this.Model = (function() {
                   break;
                 }
               }
-              if (model.get(key) == null) {
-                console.debug("" + (model.getClassName()) + " hasOne " + assoc.options.model + " is undefined.");
-              }
               break;
             case "belongsTo":
               relationId = model.getProperty("" + (assoc.options.model.toLowerCase()) + "Id");
               target = group.models[assoc.options.model][relationId];
               if (target != null) {
                 model.setProperty(key, target, false);
-              } else {
-                console.debug("" + (model.getClassName()) + " belongsTo " + assoc.options.model + " is undefined.");
               }
           }
         }
@@ -271,6 +263,16 @@ this.Model = (function() {
       lazyLoader();
     }
     return this;
+  };
+
+  Model.create = function(data) {
+    var model;
+    if (data == null) {
+      data = {};
+    }
+    model = new this();
+    model.fromJS(data);
+    return model;
   };
 
   Model.prototype.fromJSON = function(json) {

@@ -139,24 +139,22 @@ class @Model
               through = assoc.options.through
               if through?
                 do (id, model, key, assoc) =>
-                  lazyLoaders.push () =>
-                    
-                    # through する対象を記述していないとエラー
-                    if not model.hasProperty(through)
-                      throw new Error("#{model.getClassName()} has not #{through} relation. define relation is #{key}.")
-                    
-                    # 同じIDがある場合は複数登録しない
-                    done = {}
-                    targets = []
-                    for throughModel in model.getProperty(through)
-                      target = throughModel.getProperty(assoc.options.model.toLowerCase())
-                      relationId = target.getProperty("id")
-                      if not done.hasOwnProperty(relationId)
-                        targets.push(target)
-                      done[relationId] = true
-                    
-                    # 関連先がある場合は配列を代入する
-                    model.setProperty(key, targets, false) if not targets.isEmpty()
+                  # through する対象を記述している場合は処理を追加する
+                  if model.hasProperty(through)
+                    lazyLoaders.push () =>
+                      
+                      # 同じIDがある場合は複数登録しない
+                      done = {}
+                      targets = []
+                      for throughModel in model.getProperty(through)
+                        target = throughModel.getProperty(assoc.options.model.toLowerCase())
+                        relationId = target.getProperty("id")
+                        if not done.hasOwnProperty(relationId)
+                          targets.push(target)
+                        done[relationId] = true
+                      
+                      # 関連先がある場合は配列を代入する
+                      model.setProperty(key, targets, false) if not targets.isEmpty()
                   
               else
                 targets = []
@@ -168,8 +166,6 @@ class @Model
                 
                 if not targets.isEmpty()
                   model.setProperty(key, targets, false)
-                else
-                  console.debug("#{model.getClassName()} hasOne #{assoc.options.model} is undefined.")
 
             when "hasOne"
               id = model.getProperty("id")
@@ -178,22 +174,24 @@ class @Model
                 if id == relationId
                   model.setProperty(key, target, false)
                   break
-              if not model.get(key)?
-                console.debug("#{model.getClassName()} hasOne #{assoc.options.model} is undefined.")
 
             when "belongsTo"
               relationId = model.getProperty("#{assoc.options.model.toLowerCase()}Id")
               target = group.models[assoc.options.model][relationId]
               if target?
                 model.setProperty(key, target, false)
-              else
-                console.debug("#{model.getClassName()} belongsTo #{assoc.options.model} is undefined.")
     
     # 後読み処理を実行する
     for lazyLoader in lazyLoaders
       lazyLoader()
     
     return @
+    
+  # 新しいオブジェクトを作成する
+  @create: (data={}) ->
+    model = new @()
+    model.fromJS(data)
+    return model
     
   # json をモデルに取り込む
   fromJSON: (json) -> 
