@@ -3,6 +3,14 @@ javascript-relational
 
 javascriptでリレーショナルモデルを処理するモデルクラス
 
+必要なライブラリ
+* sugar.js
+
+動作確認したブラウザ
+* Chrome
+* Firefox
+* IE8+
+
 ```coffee
 # 使い方
 
