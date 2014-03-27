@@ -2,17 +2,36 @@ this.Model = (function() {
   function Model() {}
 
   Model.mixin = function(clazz) {
-    var capture, method, name, _ref;
+    var capture, global, method, name, _base, _base1, _base2, _ref;
+    global = (function() {
+      return this;
+    })();
+    if (global.console == null) {
+      global.console = {};
+    }
+    if ((_base = global.console).log == null) {
+      _base.log = function() {};
+    }
+    if ((_base1 = global.console).debug == null) {
+      _base1.debug = function() {};
+    }
+    if ((_base2 = global.console).warn == null) {
+      _base2.warn = function() {};
+    }
     for (name in Model) {
       method = Model[name];
       clazz[name] = method;
     }
-    if (this.relationalModels()[clazz.name] != null) {
+    if (this.relationalModels()[clazz.getName()] != null) {
       capture = {};
-      Error.captureStackTrace(capture, this.mixin);
-      console.warn("override relationalModel: " + clazz.name + " at " + capture.stack);
+      if (Error.captureStackTrace != null) {
+        Error.captureStackTrace(capture, this.mixin);
+      } else {
+        capture.stack = "stack trace unsupported.";
+      }
+      console.warn("override relationalModel: " + (clazz.getName()) + " at " + capture.stack);
     }
-    this.relationalModels()[clazz.name] = clazz;
+    this.relationalModels()[clazz.getName()] = clazz;
     _ref = Model.prototype;
     for (name in _ref) {
       method = _ref[name];
@@ -79,8 +98,15 @@ this.Model = (function() {
     }
   };
 
+  Model.getName = function() {
+    if (!this.hasOwnProperty(name)) {
+      this.name = ('' + this).replace(/^\s*function\s*([^\(]*)[\S\s]+$/im, '$1');
+    }
+    return this.name;
+  };
+
   Model.prototype.getClassName = function() {
-    return this.constructor.name;
+    return this.constructor.getName();
   };
 
   Model.prototype.attrs = function() {
@@ -146,7 +172,7 @@ this.Model = (function() {
         switch (assoc.type) {
           case "hasMany":
             if (!Object.isArray(value)) {
-              throw new Error("" + this.name + " has " + key + " property is not array.");
+              throw new Error("" + (this.getName()) + " has " + key + " property is not array.");
             }
             for (_i = 0, _len = value.length; _i < _len; _i++) {
               item = value[_i];
@@ -167,13 +193,13 @@ this.Model = (function() {
         }
       }
     }
-    if (models[_name = this.name] == null) {
+    if (models[_name = this.getName()] == null) {
       models[_name] = {};
     }
-    if (models[this.name][model.getProperty("id")] != null) {
-      console.debug("" + this.name + ":" + (model.getProperty('id')) + " is duplicated.");
+    if (models[this.getName()][model.getProperty("id")] != null) {
+      console.debug("" + (this.getName()) + ":" + (model.getProperty('id')) + " is duplicated.");
     } else {
-      models[this.name][model.getProperty("id")] = model;
+      models[this.getName()][model.getProperty("id")] = model;
     }
     return {
       model: model,
@@ -338,3 +364,4 @@ this.Model = (function() {
   return Model;
 
 })();
+RunLink

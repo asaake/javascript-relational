@@ -3,16 +3,23 @@ class @Model
 
   # モデルの機能を付与する
   @mixin: (clazz) ->
+    # IEのコンソール対策
+    global = do () -> @
+    global.console ?= {}
+    global.console.log ?= () ->
+    global.console.debug ?= () ->
+    global.console.warn ?= () ->
+    
     clazz[name] = method for name, method of Model
     
-    if @relationalModels()[clazz.name]?
+    if @relationalModels()[clazz.getName()]?
       capture = {}
       if Error.captureStackTrace?
         Error.captureStackTrace(capture, @mixin)
       else
         capture.stack = "stack trace unsupported."
-      console.warn("override relationalModel: #{clazz.name} at #{capture.stack}")
-    @relationalModels()[clazz.name] = clazz
+      console.warn("override relationalModel: #{clazz.getName()} at #{capture.stack}")
+    @relationalModels()[clazz.getName()] = clazz
     
     clazz.prototype[name] = method for name, method of Model.prototype
     return
@@ -56,10 +63,15 @@ class @Model
       @_expectAttrs ?= []
     else
       @_expectAttrs = expectAttrs
-    
+  
+  @getName: () ->
+    if not @hasOwnProperty(name)
+      @name = (''+@).replace(/^\s*function\s*([^\(]*)[\S\s]+$/im, '$1')
+    @name
+  
   # クラス名を取得する
   getClassName: () ->
-    @constructor.name
+    @constructor.getName()
     
   # プロパティの一覧を取得する
   attrs: () ->
@@ -108,7 +120,7 @@ class @Model
         switch assoc.type
           when "hasMany"
             if not Object.isArray(value)
-              throw new Error("#{@name} has #{key} property is not array.")
+              throw new Error("#{@getName()} has #{key} property is not array.")
             for item in value
               modelClass = @getRelationalModel(assoc)
               modelClass.grouping(item, models)
@@ -120,12 +132,12 @@ class @Model
             modelClass.grouping(value, models)
           else
             throw new Error("#{assoc.type} is not association type.")
-
-    models[@name] ?= {}
-    if models[@name][model.getProperty("id")]?
-      console.debug("#{@name}:#{model.getProperty('id')} is duplicated.")
+    
+    models[@getName()] ?= {}
+    if models[@getName()][model.getProperty("id")]?
+      console.debug("#{@getName()}:#{model.getProperty('id')} is duplicated.")
     else
-      models[@name][model.getProperty("id")] = model
+      models[@getName()][model.getProperty("id")] = model
     return {
       model: model
       models: models
