@@ -1,0 +1,14 @@
+{
+  "name": "javascript-relational",
+  "version": "0.0.1",
+  "homepage": "https://github.com/asaake/javascript-relational",
+  "authors": [
+    "asaake <asaake88@gmail.com>"
+  ],
+  "main": "src/relational-model.js",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "bower_components"
+  ]
+}
