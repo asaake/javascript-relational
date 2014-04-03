@@ -1,0 +1,1 @@
+#= require relational-model-spec.coffee

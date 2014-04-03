@@ -5,10 +5,27 @@
   "authors": [
     "asaake <asaake88@gmail.com>"
   ],
-  "main": "src/relational-model.js",
+  "main": "dest/relational-model.js",
   "license": "MIT",
   "ignore": [
     "**/.*",
-    "bower_components"
-  ]
+    "app",
+    "bower_components",
+    "manifest",
+    "node_modules",
+    "spec",
+    "bower.json",
+    "easy-mincer.json",
+    "package.json"
+  ],
+  "dependencies": {
+    "console-polyfill": "*",
+    "sugar": "*"
+  },
+  "devDependencies": {
+    "mocha": "*",
+    "sinon": "*",
+    "expect": "*",
+    "sinon-expect": "*"
+  }
 }

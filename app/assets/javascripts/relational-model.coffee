@@ -242,7 +242,10 @@ class @Model
 
     # includes に含まれていない関連は削除する
     for key, assoc of @constructor.associations()
-      if not(includes?) || (Object.isObject(includes) && not(includes.hasOwnProperty(key))) || (Object.isArray(includes) && includes.indexOf(key) == -1)
+      if not(includes?) \
+          || (Object.isObject(includes) \
+          && not(includes.hasOwnProperty(key))) \
+          || (Object.isArray(includes) && includes.indexOf(key) == -1)
         delete js[key]
       else
         if Object.isArray(js[key])

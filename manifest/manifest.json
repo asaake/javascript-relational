@@ -1,0 +1,13 @@
+{
+  "assets": {
+    "relational-model.js": "relational-model-b1bc07e69b411dba7674238e5ad8d318.js"
+  },
+  "files": {
+    "relational-model-b1bc07e69b411dba7674238e5ad8d318.js": {
+      "logical_path": "relational-model.js",
+      "mtime": "2014-04-02T12:34:33.000Z",
+      "size": 11176,
+      "digest": "b1bc07e69b411dba7674238e5ad8d318"
+    }
+  }
+}

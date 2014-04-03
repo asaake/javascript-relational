@@ -1,0 +1,10 @@
+{
+    "main": "relational-model.js",
+    "dest": "relational-model.js",
+    "paths": [
+      "app/assets/javascripts",
+      "bower_components",
+      "spec/assets",
+      "spec/assets/javascripts"
+    ]
+}

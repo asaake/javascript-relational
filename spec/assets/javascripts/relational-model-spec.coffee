@@ -1,3 +1,6 @@
+#= require vendor.coffee
+#= require relational-model.coffee
+
 describe "Model", () ->
 
   describe "コモンメソッド", () ->
