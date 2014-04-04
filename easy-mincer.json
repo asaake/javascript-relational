@@ -1,10 +1,12 @@
 {
-    "main": "relational-model.js",
-    "dest": "relational-model.js",
+    "targets": ["relational-model.js"],
     "paths": [
-      "app/assets/javascripts",
       "bower_components",
-      "spec/assets",
-      "spec/assets/javascripts"
+      "app/assets/javascripts",
+      "app/assets/stylesheets",
+      "app/assets/templates",
+      "test/assets/javascripts",
+      "test/assets/stylesheets",
+      "test/assets/templates"
     ]
 }
